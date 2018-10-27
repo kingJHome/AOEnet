@@ -32,6 +32,9 @@ void AddArcs(ALGraph *g,char *head,char *tail,int weight);
 //find key path
 int CriticalPath(ALGraph g);
 
+//visit graph
+void outPutALGraph(ALGraph g);
+
 //清除有向图
 void clearALGraph(ALGraph *g);
 #endif

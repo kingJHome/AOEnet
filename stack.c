@@ -1,3 +1,5 @@
+#include "stack.h"
+
 //initial stack
 void InitStack(Stack *s,int len){
 	s->array = (int*)malloc(len * sizeof(int));

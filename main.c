@@ -9,12 +9,12 @@ int main(int argc,char *argv[]){
 		int weight = 0;
 		char ver1[3] = "",
 			 ver2[3] = "",
-			 content[30] = "",
+			 content[50] = "",
 			 *temp = NULL;
 		ALGraph algraph = {NULL,0};
 
 		//read file content and create ALGraph
-		while( !feof(fp) && fgets(content, 30, fp) ){
+		while( !feof(fp) && fgets(content, 50, fp) ){
 			if( strchr(content,':') ){
 				temp = strchr(content,':') + 1;
 
@@ -31,9 +31,9 @@ int main(int argc,char *argv[]){
 		}
 
 		//find the key path
-		CriticalPath(algraph);
-
-		clearALGraph(*algraph);
+		//CriticalPath(algraph);
+		
+		clearALGraph(&algraph);
 		fclose(fp);
 	}
 	return 0;

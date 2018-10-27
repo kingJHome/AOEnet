@@ -87,17 +87,45 @@ void AddArcs(ALGraph *g,char *head,char *tail,int weight){
 	addArcToVertex(g->vertices, headPos, tailPos, weight);
 }
 
-int TopologicalOrder(ALGraph g,Stack t){
-
+//topological sort
+int TopologicalOrder(ALGraph g,Stack t,int *ve){
+	int count = 0;
 }
 
 //find key path
 int CriticalPath(ALGraph g){
+	int ve[g.length],vl[g.length];
 	Stack st = {NULL,0,0};
 
-	InitStack(&st, g->length);
-	if( !() ){
-		return 
+	InitStack(&st, g.length);
+	for(int i = 0; i < g.length; ++i){
+		ve[i] = vl[i] = 0;
+	}
+
+	if( !TopologicalOrder(g,st,ve) ){
+		return 0;
+	}
+
+	//output critical vertex
+	printf("critical path is:");
+	for(int i = 0; i < g.length; ++i){
+		if(ve[i] == vl[i]){
+			printf("%s ", g.vertices[i].data);
+		}
+	}
+	printf("\n");
+}
+
+//visit graph
+void outPutALGraph(ALGraph g){
+	for(int i = 0; i < g.length; ++i){
+		printf("%s(%d)", g.vertices[i].data, g.vertices[i].dIn);
+		Arc *temp = g.vertices[i].firstarc;
+
+		for( ; temp; temp = temp->nextarc){
+			printf("-->%d(%d)", temp->adjvex, temp->cost);
+		}
+		printf("\n");
 	}
 }
 
