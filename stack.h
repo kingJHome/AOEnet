@@ -15,6 +15,9 @@ void InitStack(Stack *s,int len);
 //whether the stack is empty
 int StackEmpty(Stack s);
 
+//the e whether in the stack
+int InStack(Stack s,int e);
+
 //push a data to stack
 void Push(Stack *s,int e);
 

@@ -15,6 +15,7 @@ typedef struct arc{
 typedef struct vertex{
 	char *data;
 	int dIn;
+	int dOut;
 	struct arc *firstarc;
 }Vertex;
 

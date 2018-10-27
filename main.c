@@ -31,8 +31,8 @@ int main(int argc,char *argv[]){
 		}
 
 		//find the key path
-		//CriticalPath(algraph);
-		
+		CriticalPath(algraph);
+
 		clearALGraph(&algraph);
 		fclose(fp);
 	}

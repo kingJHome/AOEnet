@@ -49,6 +49,9 @@ void addArcToVertex(Vertex *vers,int st,int et,int weight){
 		addNote->adjvex = et;
 		addNote->cost = weight;
 		addNote->nextarc = NULL;
+		//increace the out degree of the arc
+		vers[st].dOut += 1;
+
 		//增加弧头的入度
 		vers[et].dIn += 1;
 		
@@ -72,7 +75,7 @@ void CreateALGraph(ALGraph *g,char *contents){
 			g->length = clen;
 			for(int i = 0; i < clen; ++i){
 				g->vertices[i].data = strdup(letters[i]);
-				g->vertices[i].dIn = 0;
+				g->vertices[i].dIn = g->vertices[i].dOut = 0;
 				g->vertices[i].firstarc = NULL;
 			}
 		}
@@ -88,23 +91,81 @@ void AddArcs(ALGraph *g,char *head,char *tail,int weight){
 }
 
 //topological sort
-int TopologicalOrder(ALGraph g,Stack t,int *ve){
-	int count = 0;
+int TopologicalOrder(ALGraph g,Stack *t,Stack *s,int *ve){
+	int count = 0,j,k,
+		*inDegee = (int*)malloc(g.length * sizeof(int));
+
+	if( inDegee ){
+		for(int i = 0; i < g.length; ++i){
+			inDegee[i] = g.vertices[i].dIn;
+			if( !inDegee[i] ){
+				Push(t, i);
+			}
+		}
+
+		while( !StackEmpty(*t) ){
+			Pop(t, &j);
+			Push(s, j);
+			count++;
+
+			for(Arc *temp = g.vertices[j].firstarc; temp; temp = temp->nextarc){
+				k = temp->adjvex;
+				--inDegee[k];
+				if( !inDegee[k] ){
+					Push(t, k);
+				}
+				if( ve[j] + temp->cost > ve[k] ){
+					ve[k] = ve[j] + temp->cost;
+				}
+			}
+		}
+	}
+
+	if( count < g.length ){
+		return 0;
+	}else{
+		return 1;
+	}
+}
+
+void OppTopologicalOrder(ALGraph g,Stack *t,int *ve,int *vl){
+	int j,k;
+
+	for(int i = 0; i < g.length; ++i){
+		vl[i] = ve[i];
+	}
+
+	while( !StackEmpty(*t) ){
+		Pop(t, &j);
+
+		if( g.vertices[j].dIn ){
+			for(Arc *temp = g.vertices[j].firstarc; temp; temp = temp->nextarc){
+				k = temp->adjvex;
+				if(vl[k] - temp->cost > vl[j]){
+					vl[j] = vl[k] - temp->cost;
+				}
+			}
+		}
+	}
 }
 
 //find key path
 int CriticalPath(ALGraph g){
 	int ve[g.length],vl[g.length];
-	Stack st = {NULL,0,0};
+	Stack st = {NULL,0,0},tt = {NULL,0,0};
 
 	InitStack(&st, g.length);
+	InitStack(&tt, g.length);
 	for(int i = 0; i < g.length; ++i){
 		ve[i] = vl[i] = 0;
 	}
 
-	if( !TopologicalOrder(g,st,ve) ){
+	if( !TopologicalOrder(g,&st,&tt,ve) ){
 		return 0;
 	}
+
+	//calulation vl array
+	OppTopologicalOrder(g,&tt,ve,vl);
 
 	//output critical vertex
 	printf("critical path is:");
@@ -114,6 +175,7 @@ int CriticalPath(ALGraph g){
 		}
 	}
 	printf("\n");
+	return 1;
 }
 
 //visit graph
